@@ -1,4 +1,4 @@
-package gel;
+package Gel.core;
 
 public class SubscriberMultiAccessException extends Exception {
 

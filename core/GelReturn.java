@@ -1,5 +1,6 @@
-package gel;
+package Gel.core;
 
+import java.util.Comparator;
 
 /***
  * When you get to return a GeosReturn GEL gives you a chance to change something about execution
@@ -18,7 +19,7 @@ package gel;
  * @author xphos
  *
  */
-public enum GelReturn{
+public enum GelReturn implements Comparator<GelReturn>{
 	
 	Continue(4),
 	Step(3),
@@ -28,6 +29,20 @@ public enum GelReturn{
 	int val;
 	GelReturn(int i) {
 		val = i;
+	}
+	@Override
+	public int compare(GelReturn o1, GelReturn o2) {
+		return o2.val-o1.val;
+	}
+	
+	@Override
+	public String toString() {
+		if(this.val == GelReturn.Continue.val) return "GR::Continue";
+		if(this.val == GelReturn.Step.val) return "GR::Step";
+		if(this.val == GelReturn.ContextSwitch.val) return "GR::ContextSwitch";
+		if(this.val == GelReturn.End.val) return "GR::End";
+		
+		return "GR::ERROR";
 	}
 
 	

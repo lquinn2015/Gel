@@ -1,10 +1,6 @@
-package gel;
-
-import ghidra.app.emulator.EmulatorHelper;
+package Gel.core;
 import ghidra.program.model.address.Address;
 import ghidra.program.model.address.AddressSet;
-
-
 
 /***
  * 
@@ -57,7 +53,7 @@ public interface EventSubscriber {
 	 * 				This is a shared object among all Subscribers so beware of directly 
 	 * 				Altering state in too places
 	 * */
-	public void Arm(GelState geos) throws SubscriberMultiAccessException;
+	public void Arm(GelState state) throws SubscriberMultiAccessException;
 	
 	/**
 	 * 	When GEL sends the onEmulationStart it means you are starting a run of the emulation
@@ -65,7 +61,7 @@ public interface EventSubscriber {
 	 * 
 	 * 		@param {@link Gel} Emulation Link
 	 * */
-	public void onEmulationStart(GelState geos) throws SubscriberMultiAccessException;
+	public void onEmulationStart(GelState state) throws SubscriberMultiAccessException;
 
 	/**	When GEL hits a breakpoint it will notify every subscriber so they can react
 	 * 		This allows for a laying of work from subscribers and isolating work.
@@ -74,7 +70,7 @@ public interface EventSubscriber {
 	 * 		@param {@link GelState} Emulation Link
 	 * 		@return {@link GelReturn} 
 	 * */
-	public GelReturn onAddressHit(GelState geos, Address hit) throws SubscriberMultiAccessException;
+	public GelReturn onAddressHit(GelState state, Address hit) throws SubscriberMultiAccessException;
 	
 	/**   GEL Errors are nubulos it could be PCode Emulation error
 	 * 			A Memory access Error or anything its your job to ask
@@ -83,7 +79,7 @@ public interface EventSubscriber {
 	 * 		@param {@link GelState} Emulation Link
 	 * 		@return true means error was handled false means it was not
 	 * */
-	public boolean onError(GelState geos) throws SubscriberMultiAccessException;
+	public boolean onError(GelState state) throws SubscriberMultiAccessException;
 
 	/**	GEL emits when you return from the current context or get paused from thread context switch
 	 * 		if using threaded mode. You might want to save data here or calculate something before
@@ -91,7 +87,7 @@ public interface EventSubscriber {
 	 * 
 	 * 		@param {@link Gel} Emulation Link
 	 * */
-	public void onEmulationEnd(GelState geos, Address last) throws SubscriberMultiAccessException;
+	public void onEmulationEnd(GelState state, Address last) throws SubscriberMultiAccessException;
 
 	/***
 	 * The needs may exist for things like DMA to trigger events in the context of subscribers
@@ -102,5 +98,5 @@ public interface EventSubscriber {
 	 * @param set This is the addres set that has been effective your job to handle that
 	 * @return {@link GelReturn}  If you need to emit a context switch etc etc do it here
 	 */
-	public GelReturn onGelMemoryAccess(GelState gel, AddressSet set);
+	public GelReturn onGelMemoryAccess(GelState state, AddressSet set);
 }

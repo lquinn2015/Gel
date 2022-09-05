@@ -1,9 +1,7 @@
-package gel;
+package Gel.core;
 
-import static org.junit.Assume.assumeNoException;
 
 import java.math.BigInteger;
-import java.util.HashMap;
 import java.util.HashSet;
 
 import ghidra.app.emulator.EmulatorHelper;
@@ -12,14 +10,13 @@ import ghidra.program.model.address.AddressSet;
 
 public class GelState 
 {
-	
-	private EmulatorHelper gemu;
+	private Gel gel;
 	HashSet<String> regMap;
 	AddressSet memCover;
 	
-	public GelState(EmulatorHelper gemu) 
+	public GelState(Gel gel) 
 	{		
-		this.gemu = gemu;
+		this.gel = gel;
 		regMap = new HashSet<>();
 		memCover = new AddressSet();
 	}
@@ -36,39 +33,42 @@ public class GelState
 	 * @return EmulatorHelper
 	 */
 	public EmulatorHelper getEmulatorHelper() {
-		return gemu;
+		return gel.gemu;
 	}
 	
+	
+	public void writeReg(String reg, long val) throws SubscriberMultiAccessException {writeReg(reg, BigInteger.valueOf(val));}
 	public void writeReg(String reg, BigInteger val) throws SubscriberMultiAccessException {
 		
 		if(regMap.contains(reg)) 
 			throw new SubscriberMultiAccessException(reg + " Was written by two subs");
 		regMap.add(reg);
-		gemu.writeRegister(reg, val);
+		gel.getGemu().writeRegister(reg, val);
 	}
-	
+		
 	public void writeMem(Address addr, byte[] val) throws SubscriberMultiAccessException {
 		
 		if(memCover.contains(addr))
 			throw new SubscriberMultiAccessException(addr + " Was written by two subs");
 		memCover.add(addr, addr.add(val.length));
 		
-		gemu.writeMemory(addr, val);
+		gel.getGemu().writeMemory(addr, val);
 	}
 	
-	public void setBreakpont(Address addr) {
-		gemu.setBreakpoint(addr);
+	public void setBreakpoint(Address addr) {
+		gel.getGemu().setBreakpoint(addr);
 	}
 	
 	public byte[] readMem(Address addr, int len) {
-		return gemu.readMemory(addr, len);
+		return gel.getGemu().readMemory(addr, len);
 	}
 	
 	public BigInteger readReg(String reg) {
-		return gemu.readRegister(reg);
+		return gel.getGemu().readRegister(reg);
 	}
-	
 
-	
-	
+	public Gel getGel() {
+		return gel;
+	}
+
 }
